@@ -27,6 +27,7 @@
 </template>
 
 <script>
+/* eslint-disable */
 import {_} from 'vue-underscore'
 import axios from 'axios'
 export default {
