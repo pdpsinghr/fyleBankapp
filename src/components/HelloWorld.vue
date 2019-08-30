@@ -1,8 +1,16 @@
 <template>
   <div v-if="allDataLoaded" class="hello">
     <div class="input-group searchgroup">
-      <input id="input-icon-left" placeholder="Search" name="input-icon-left" style="border: 0px;" @keyup="" v-model="search" required/>
+      <input id="input-icon-left" type="text" placeholder="Search" name="input-icon-left" style="border: 0px;" v-model="search" required/>
       <label class="control-label" for="input-icon-left"></label><i class="bar"></i>
+    </div>
+    <div class="selectop">
+      <label>Per Page Items: </label>
+      <select v-model="perpage">
+        <option>10</option>
+        <option>20</option>
+        <option>30</option>
+      </select>
     </div>
     <table style="width: 100%">
       <tr class="parentThHeading">
@@ -41,7 +49,7 @@ export default {
       models: {},
       allBankList: [],
       tableFields: {bank_id: 'bank_id', ifsc: 'ifsc', bank_name:'bank_name', branch: 'branch', district: 'district', city: 'city', state: 'state', address: 'address'},
-      perpage: 10,
+      perpage: 20,
       currentPageIndex: 0,
       search: '',
     }
@@ -54,7 +62,6 @@ export default {
       allFavr.map(r => {
         this.models[r] = true
       })
-      console.log('response', r.data)
     }).catch(err => {
       console.log(err)
     })
@@ -62,7 +69,6 @@ export default {
   computed: {
     pages: function () {
       var filteredData = this.filteredData
-      console.log('filteredData.length', filteredData.length)
       var x = Math.ceil(filteredData.length / this.perpage)
       var arr = []
       for (var i = 1; i <= x; i++) {
@@ -75,14 +81,18 @@ export default {
       }
     },
     dataPerPage: function () {
-      return this.filteredData.slice(this.currentPageIndex * 10, this.currentPageIndex * 10 + 10)
+      return this.filteredData.slice(this.currentPageIndex * this.perpage, this.currentPageIndex * this.perpage + this.perpage)
     },
     filteredData: function () {
       var data = this.allBankList
       if (this.search !== '') {
         data = _.filter(this.allBankList, (d) => {
-          console.log(this.tableFields.city)
-          return d[this.tableFields.city].toLowerCase().indexOf(this.search.toUpperCase()) !== -1
+          var allValues = Object.values(d)
+          var valu = allValues.filter(d => {
+            var d = d.toString()
+            return d.includes(this.search)
+          }).length
+          return valu > 0 ? true : false
         })
       }
       return data
@@ -204,6 +214,11 @@ tr {
   }
   .capitalize {
      text-transform: capitalize;
+  }
+  .selectop {
+    position: absolute;
+    top: 62px;
+    right: 109px;
   }
   tr:nth-child(even) {background-color: rgb(239,244,245) !important;}
 </style>
