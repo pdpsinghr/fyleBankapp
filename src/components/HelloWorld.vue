@@ -49,9 +49,15 @@ export default {
       models: {},
       allBankList: [],
       tableFields: {bank_id: 'bank_id', ifsc: 'ifsc', bank_name:'bank_name', branch: 'branch', district: 'district', city: 'city', state: 'state', address: 'address'},
-      perpage: 20,
+      perpage: 10,
       currentPageIndex: 0,
       search: '',
+    }
+  },
+  watch: {
+    perpage: function (newValue, oldValue) {
+      this.perpage = parseInt(newValue)
+      this.currentPageIndex = 0
     }
   },
   mounted () {
@@ -81,6 +87,7 @@ export default {
       }
     },
     dataPerPage: function () {
+      debugger;
       return this.filteredData.slice(this.currentPageIndex * this.perpage, this.currentPageIndex * this.perpage + this.perpage)
     },
     filteredData: function () {
